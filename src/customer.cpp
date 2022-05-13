@@ -2,17 +2,114 @@
 
 // Init to 0 is unnecessary, because static
 // variables are automatically initialized to 0
-int Customer::id_generator; // = 0;
+int Customer::ID_generator; // = 0;
 
 Customer::Customer(){
-    ID = id_generator;
-    id_generator++;
+    ID = ID_generator;
+    ID_generator++;
+}
+
+Customer::Customer( const Customer& other ){
+    ID = other.ID;
+    copyAllPendingOrders( other );
+    collected_order_IDs.clear();
+    collected_order_IDs.reserve( other.collected_order_IDs.size() );
+    collected_order_IDs = other.collected_order_IDs;
 }
 
 Customer::~Customer(){
-    
+    pending_orders.clear();
+    collected_order_IDs.clear();
 }
 
 int Customer::getID() const {
     return ID;
+}
+
+// bool Customer::makeOrder( const Shop& shop, int &order_ID ){
+//     order_ID = -1;
+//     return true;
+//     // shop.
+// }
+
+void Customer::copyAllPendingOrders( const Customer& other ){
+    pending_orders.clear();
+    pending_orders.reserve( other.pending_orders.size() );
+
+    for( long long unsigned int i=0; i < other.pending_orders.size(); i++ ){
+        pending_orders[i].first  = other.pending_orders[i].first;
+        pending_orders[i].second = other.pending_orders[i].second;
+    }
+}
+
+Customer& Customer::operator=( const Customer& other ){
+    if( this == &other )
+        return *this;
+    
+    ID = other.ID;
+    copyAllPendingOrders( other );
+    collected_order_IDs.clear();
+    collected_order_IDs.reserve( other.collected_order_IDs.size() );
+    collected_order_IDs = other.collected_order_IDs;
+
+    return *this;
+}
+
+bool Customer::operator==( const Customer& other ) const {
+    if( this == &other )
+        return true;
+    
+    if( ID == other.ID ){
+        for( long long unsigned int i=0; i < other.collected_order_IDs.size(); i++ )
+            if( collected_order_IDs[i] != other.collected_order_IDs[i] )
+                return false;
+        for( long long unsigned int i=0; i < other.pending_orders.size(); i++ )
+            if( pending_orders[i].second != other.pending_orders[i].second )
+                return false;
+    }
+
+    return true;
+}
+
+bool Customer::operator!=( const Customer& other ) const {
+    return !( *this == other );
+}
+
+ostream& operator<<( ostream& out, const Customer& customer ){
+    out << "Customer " << customer.ID << ":" << endl;
+
+    long long unsigned int shop_count = customer.pending_orders.size();
+
+    for( long long unsigned int i=0; i < shop_count; i++ ){
+        int shop_ID = customer.pending_orders[i].first;
+        long long unsigned int order_count = customer.pending_orders[i].second.size();
+
+        out << "\tIDs of pending orders in shop " << shop_ID << " (" << order_count << " in total):" << endl;
+        out << "\t\t";
+
+        if( customer.pending_orders[i].second.empty() )
+            out << "Empty";
+        else {
+            out << customer.pending_orders[i].second[0];
+            for( long long unsigned int order_ID=1; order_ID < order_count; order_ID++ )
+                out << ", " << customer.pending_orders[i].second[order_ID];
+        }
+        out << endl;
+    }
+
+    long long unsigned int collected_order_cnt = customer.collected_order_IDs.size();
+
+    out << "\tIDs of collected orders: ";
+
+    if( customer.collected_order_IDs.empty() )
+            out << "Empty";
+    else{
+        out << customer.collected_order_IDs[0];
+        for( long long unsigned int i=0; i < collected_order_cnt; i++ )
+            out << ", " << customer.collected_order_IDs[i];
+    }
+
+    out << endl;
+
+    return out;
 }

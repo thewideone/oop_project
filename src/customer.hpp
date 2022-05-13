@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <utility>
+
+// #include "shop.hpp"
 
 using namespace std;
 
@@ -10,27 +13,35 @@ using namespace std;
 class Customer{
 private:
     int ID;
-    static int id_generator; // static variables are // automatically initialized to 0
+    static int ID_generator; // static variables are
+                             // automatically initialized to 0
 
-    struct shop_orders{
-        vector<int> IDs;
-    };
+    // struct shop_orders{
+    //     vector<int> IDs;
+    // };
 
-    vector<shop_orders> pending_orders;
+    //       shop ID, IDs of orders
+    vector< pair<int, vector<int>> > pending_orders;
     vector<int> collected_order_IDs;
+
+    void copyAllPendingOrders( const Customer& other );
+
 public:
     Customer();
-    Customer( const Customer& archetype );
+    Customer( const Customer& other );
     ~Customer();
     int getID() const;
 
-    Customer& operator=( const Customer& customer );
-    int operator==( const Customer& customer ) const;
-    int operator!=( const Customer& customer ) const;
+    // // bool makeOrder( const Shop& shop, int &order_ID );
+    // // bool addItemToOrder( const Shop& shop, int &order_ID, int item_ID, int count );
 
-    void printPendingOrders() const;
-    void printCollectedOrders() const;
-    void print() const;
+    Customer& operator=( const Customer& other );
+    bool operator==( const Customer& other ) const;
+    bool operator!=( const Customer& other ) const;
+
+    // void printPendingOrders() const;
+    // void printCollectedOrders() const;
+    // void print() const;
 
     friend ostream& operator<<( ostream& out, const Customer& customer );
 };
