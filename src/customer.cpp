@@ -34,9 +34,9 @@ void Customer::addItemToInventory( Item& item, int count ){
     inventory.push_back( make_pair( item, count ) );
 }
 
-void Customer::addOrderToHistory( Order& order ){
-    // order_history.addElement( order );
-}
+// void Customer::addOrderToHistory( Order& order ){
+//     order_history.addElement( order );
+// }
 
 int Customer::makeOrder( Shop& shop ){
     int order_ID = shop.newOrder( this );
@@ -61,9 +61,9 @@ bool Customer::payForOrder( Shop& shop, int order_ID, float money_amount ){
     return shop.receivePayment( order_ID, money_amount );
 }
 
-void Customer::addCollectedOrderID( int order_ID ){
-    collected_order_IDs.push_back( order_ID );
-}
+// void Customer::addCollectedOrderID( int order_ID ){
+//     collected_order_IDs.push_back( order_ID );
+// }
 
 void Customer::printInventory(){
     cout << "--------------------" << endl;

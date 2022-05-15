@@ -132,6 +132,11 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
         if( findItem( item_ID, item_idx ) ){
             // cout << "Found order and item\n";
             // cout << "Trying to add item " << item_idx << " to order " << order_idx << endl;
+            cout << "=====BLABLABLA====\n";
+            // cout << "mag size: " << magazine.size();
+            // cout << "item_idx: " << item_idx;
+            // Item item = magazine[0].first;
+            // cout << magazine[0].first.getPrice();
             pending_orders->orders[order_idx].addItem( magazine[item_idx].first, count );
 
             cout << "Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
@@ -146,7 +151,8 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
     return ret_val;
 }
 
-bool Shop::sendOrder( int order_ID, string date_of_shipment ){
+// bool Shop::sendOrder( int order_ID, string date_of_shipment ){
+bool Shop::sendOrder( int order_ID ){
     bool ret_val = false;
     int order_idx = -1;
 
@@ -166,11 +172,11 @@ bool Shop::sendOrder( int order_ID, string date_of_shipment ){
                     cout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID" << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
             }
             // Set date of shipment of the order
-            pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
+            // pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
             // Add the order to histories of orders of the shop and the customer
             Order order = pending_orders->orders[order_idx];
             // order_history->addElement( order );
-            pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
+            // pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
             // Remove the order from pending order list of the shop
             pending_orders->removeElement( order_ID );
             cout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;

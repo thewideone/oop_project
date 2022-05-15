@@ -28,7 +28,8 @@ int main( void ){
 	cout << "Order " << order_ID << " price is " << price << endl;
 	c1.payForOrder( s1, order_ID, price );
 	cout << s1;
-	s1.sendOrder( order_ID, "15/05/2022" );
+	// s1.sendOrder( order_ID, "15/05/2022" );
+	s1.sendOrder( order_ID );
 	c1.printInventory();
 
 	cout << s1;

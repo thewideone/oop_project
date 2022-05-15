@@ -27,7 +27,7 @@ private:
     //       shop ID, IDs of orders
     vector< pair<int, vector<int>> > pending_orders;
     vector<int> collected_order_IDs;
-    OrderList order_history;    // list of already filled orders
+    // OrderList order_history;    // list of already filled orders
 
     vector< pair<Item, int> > inventory; // items in the possession of the customer and their count
 
@@ -40,14 +40,14 @@ public:
     int getID() const;
 
     void addItemToInventory( Item& item, int count );
-    void addOrderToHistory( Order& order );
+    // void addOrderToHistory( Order& order );
 
     int makeOrder( Shop& shop );    // returns ID of a newly created order
     bool addItemToOrder( Shop& shop, int order_ID, int item_ID, int count );
 
     bool payForOrder( Shop& shop, int order_ID, float money_amount );
 
-    void addCollectedOrderID( int order_ID );
+    // void addCollectedOrderID( int order_ID );
 
     void printInventory();
 

@@ -18,7 +18,7 @@ private:
                                 // automatically initialized to 0
     Customer* customer; // pointer to the customer making the order
     bool is_paid;
-    string date_of_shipment;
+    // string date_of_shipment;
     
 public:
     vector<pair<Item, int>> items;
@@ -36,7 +36,7 @@ public:
     // void setPaid( bool state );
     void setCustomer( Customer* customer );
     void setPaid();
-    void setDateOfShipment( string date );
+    // void setDateOfShipment( string date );
 
     void addItem( Item item, int count );
     void removeAllItems();
