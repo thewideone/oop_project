@@ -14,7 +14,7 @@ Order::Order(){
 
     // date_of_shipment = "";
 
-    cout << "Order " << ID << " has been created." << endl;
+    dout << "Order " << ID << " has been created." << endl;
 }
 
 // Copy constructor
@@ -28,13 +28,13 @@ Order::Order( const Order& other ){
     for (long long unsigned int i=0; i<other.items.size(); i++)
         items.push_back(other.items[i]);
 
-    cout << "Order " << ID << " has been created by copy constructor." << endl;
+    dout << "Order " << ID << " has been created by copy constructor." << endl;
 }
 
 // Destructor
 Order::~Order(){
     removeAllItems();
-    cout << "Order " << ID << " has been deleted." << endl;
+    dout << "Order " << ID << " has been deleted." << endl;
 }
 
 int Order::getID() const {

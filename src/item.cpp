@@ -17,7 +17,7 @@ Item::Item( const Item& other ){
 
     price = other.price;
     expiration_date = other.expiration_date;
-    cout << "Item " << ID << " has been created by copy constructor" << endl;
+    dout << "Item " << ID << " has been created by copy constructor" << endl;
 }
 
 int Item::getID() const {
@@ -72,8 +72,8 @@ bool Item::operator!=( const Item& other ) const {
 
 // void Item::print( int tab_cnt ){
 //     for( int i=0; i < tab_cnt; i++ )
-//         cout << "\t";
-//     cout << *this;
+//         dout << "\t";
+//     dout << *this;
 // }
 
 ostream& operator<<( ostream& out, const Item& item ){

@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "debug.hpp"
+
 using namespace std;
 
 class Item {

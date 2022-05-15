@@ -11,7 +11,7 @@ Shop::Shop( string name ){
     pending_orders = new OrderList;
     order_history = new OrderList;
 
-    cout << "Shop " << name << " has been created" << endl;
+    dout << "Shop " << name << " has been created" << endl;
 }
 
 Shop::Shop( const Shop& other ){
@@ -21,7 +21,7 @@ Shop::Shop( const Shop& other ){
     order_history = other.order_history;
     pending_orders = other.pending_orders;
 
-    cout << "Shop " << name << " has been created using copy constructor" << endl;
+    dout << "Shop " << name << " has been created using copy constructor" << endl;
 }
 
 Shop::~Shop(){
@@ -37,7 +37,7 @@ string Shop::getName() const {
 float Shop::getOrderPrice( int order_ID ) const {
     int order_idx = -1;
 
-    cout << "Shop " << name << ": ";
+    dout << "Shop " << name << ": ";
 
     if( findOrder( order_ID, order_idx ) )
         return pending_orders->orders[order_idx].getTotalPrice();
@@ -76,14 +76,14 @@ void Shop::removeAllItems(){
 
 bool Shop::findItem( int item_ID, int& idx ) const {
     idx = -1;
-    cout << "Shop " << name << ": ";
+    dout << "Shop " << name << ": ";
     for( long long unsigned int i=0; i < magazine.size(); i++ )
         if( magazine[i].first.getID() == item_ID ){
             idx = i;
-            cout << "Found item of ID " << item_ID << endl;
+            dout << "Found item of ID " << item_ID << endl;
             return true;
         }
-    cout << "Item of ID " << item_ID << " not found" << endl;
+    dout << "Item of ID " << item_ID << " not found" << endl;
     return false;
 }
 
@@ -103,14 +103,14 @@ bool Shop::removeItemFromMagazine( int item_ID, Item& item, int count ){
             ret_val = true;
         }
         else
-            cout << "Could not remove item of ID " << item_ID << " from magazine: not enough quantity" << endl;
+            dout << "Could not remove item of ID " << item_ID << " from magazine: not enough quantity" << endl;
         
         if( magazine[idx].second == 0 )
             // removeItem( item_ID );
             magazine.erase( magazine.begin() + idx );
     }
     else
-        cout << "Could not remove item " << item_ID << " from magazine: the item was not found" << endl;
+        dout << "Could not remove item " << item_ID << " from magazine: the item was not found" << endl;
 
     return ret_val;
 }
@@ -139,7 +139,7 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
     int order_idx = -1;
     bool ret_val = false;
 
-    cout << "Shop " << name << ": ";
+    dout << "Shop " << name << ": ";
 
     if( findOrder( order_ID, order_idx ) ){
         int item_idx = -1;
@@ -173,17 +173,17 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
                     pending_orders->orders[order_idx].addItem( magazine[item_idx].first, magazine[item_idx].second );
                 else
                     // Should not be possible
-                    cout << "!!!Item count = 0 in magazine!!!\n";
+                    dout << "!!!Item count = 0 in magazine!!!\n";
             }
 
-            cout << "Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
+            dout << "Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
             ret_val = true;
         }
         else
-            cout << "No item of ID " << item_ID << " was found in order of ID " << order_ID << endl;
+            dout << "No item of ID " << item_ID << " was found in order of ID " << order_ID << endl;
     }
     else
-        cout << "No order of ID " << order_ID << " was found" << endl;
+        dout << "No order of ID " << order_ID << " was found" << endl;
     
     return ret_val;
 }
@@ -206,7 +206,7 @@ bool Shop::sendOrder( int order_ID ){
                     customer->addItemToInventory( item, count );
                 }
                 else
-                    cout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID " << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
+                    dout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID " << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
             }
             // Set date of shipment of the order
             // pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
@@ -216,13 +216,13 @@ bool Shop::sendOrder( int order_ID ){
             pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
             // Remove the order from pending order list of the shop
             pending_orders->removeElement( order_ID );
-            cout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;
+            dout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;
         }
         else
-            cout << "Shop " << name << ": order of ID " << order_ID << " was not sent, because it has not been paid yet" << endl;
+            dout << "Shop " << name << ": order of ID " << order_ID << " was not sent, because it has not been paid yet" << endl;
     }
     else
-        cout << "Shop " << name << ": could not send order " << order_ID << ": the order was not found" << endl;
+        dout << "Shop " << name << ": could not send order " << order_ID << ": the order was not found" << endl;
     return ret_val;
 }
 
@@ -235,31 +235,31 @@ bool Shop::receivePayment( int order_ID, float money_amount ){
     bool ret_val = false;
     int idx = -1;
 
-    cout << "Shop " << name << ": ";
+    dout << "Shop " << name << ": ";
 
     if( findOrder( order_ID, idx ) ){
-        cout << "Shop " << name << ": ";
+        dout << "Shop " << name << ": ";
         if( money_amount == pending_orders->orders[idx].getTotalPrice() ){
             pending_orders->orders[idx].setPaid();
-            cout << "Successufully paid for order " << order_ID << endl;
+            dout << "Successufully paid for order " << order_ID << endl;
         }
         else if ( money_amount > pending_orders->orders[idx].getTotalPrice() )
-            cout << "Customer of ID " << pending_orders->orders[idx].getCustomer()->getID()
+            dout << "Customer of ID " << pending_orders->orders[idx].getCustomer()->getID()
                  << " tries to pay too much for order of ID " << pending_orders->orders[idx].getID()
                  << " in shop " << name << endl;
         else
-            cout << "Customer of ID " << pending_orders->orders[idx].getCustomer()->getID()
+            dout << "Customer of ID " << pending_orders->orders[idx].getCustomer()->getID()
                  << " tries to pay too little for order of ID " << pending_orders->orders[idx].getID()
                  << " in shop " << name << endl;
     }
     else
-        cout << "Couldn't pay for order of ID " << order_ID << ": the order does not exist in shop " << name << endl;
+        dout << "Couldn't pay for order of ID " << order_ID << ": the order does not exist in shop " << name << endl;
 
     return ret_val;
 }
 
 void Shop::print() const {
-    cout << *this;
+    dout << *this;
 }
 
 ostream& operator<<( ostream& out, const Shop& shop ){

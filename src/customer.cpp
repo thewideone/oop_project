@@ -10,25 +10,25 @@ Customer::Customer(){
 
     order_history = new OrderList;
 
-    cout << "Customer " << ID << " has been created" << endl;
+    dout << "Customer " << ID << " has been created" << endl;
 }
 
 Customer::Customer( const Customer& other ){
     ID = other.ID;
     copyAllPendingOrders( other );
-    cout << "Copied all pending orders\n";
+    dout << "Copied all pending orders\n";
     // collected_order_IDs.clear();
     // collected_order_IDs.reserve( other.collected_order_IDs.size() );
     // collected_order_IDs = other.collected_order_IDs;
     inventory.reserve( other.inventory.size() );
     inventory = other.inventory;
-    cout << "Copied inventory\n";
+    dout << "Copied inventory\n";
 
     order_history = new OrderList(*other.order_history);
 
     // order_history->orders = other.order_history->orders;
 
-    cout << "Customer " << ID << " has been created  using copy constructor" << endl;
+    dout << "Customer " << ID << " has been created  using copy constructor" << endl;
 }
 
 Customer::~Customer(){
@@ -114,7 +114,7 @@ Customer& Customer::operator=( const Customer& other ){
     delete order_history;
     order_history = new OrderList(*other.order_history);
 
-    cout << "Customer " << ID << " has been created by copy constructor" << endl;
+    dout << "Customer " << ID << " has been created by copy constructor" << endl;
 
     return *this;
 }
@@ -150,7 +150,7 @@ ostream& operator<<( ostream& out, const Customer& customer ){
 
     out << "Inventory:" << endl;
     for( long long unsigned int i=0; i < customer.inventory.size(); i++ )
-        cout << customer.inventory[i].first << "\tQuantity: " << customer.inventory[i].second << endl;
+        out << customer.inventory[i].first << "\tQuantity: " << customer.inventory[i].second << endl;
 
     long long unsigned int shop_count = customer.pending_orders.size();
 
