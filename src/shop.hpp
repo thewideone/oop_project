@@ -22,7 +22,7 @@ private:
     string name;
     //       item ID, item count
     vector<pair<Item,int>> magazine;
-    // OrderList* order_history;
+    OrderList* order_history;
     OrderList* pending_orders;
 
     bool findOrder( int order_ID, int& idx ) const;

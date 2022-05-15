@@ -8,6 +8,8 @@ Customer::Customer(){
     ID = ID_generator;
     ID_generator++;
 
+    order_history = new OrderList;
+
     cout << "Customer " << ID << " has been created" << endl;
 }
 
@@ -18,12 +20,16 @@ Customer::Customer( const Customer& other ){
     collected_order_IDs.reserve( other.collected_order_IDs.size() );
     collected_order_IDs = other.collected_order_IDs;
     inventory = other.inventory;
+
+    order_history->orders = other.order_history->orders;
+
     cout << "Customer " << ID << " has been created  using copy constructor" << endl;
 }
 
 Customer::~Customer(){
     pending_orders.clear();
     collected_order_IDs.clear();
+    delete order_history;
 }
 
 int Customer::getID() const {
@@ -31,12 +37,17 @@ int Customer::getID() const {
 }
 
 void Customer::addItemToInventory( Item& item, int count ){
+    if( count <= 0 ){
+        cerr << "In Customer::addItemToInventory(): Invalid item quantity. Ignoring." << endl;
+        return;
+    }
+
     inventory.push_back( make_pair( item, count ) );
 }
 
-// void Customer::addOrderToHistory( Order& order ){
-//     order_history.addElement( order );
-// }
+void Customer::addOrderToHistory( Order& order ){
+    order_history->addElement( order );
+}
 
 int Customer::makeOrder( Shop& shop ){
     int order_ID = shop.newOrder( this );
@@ -44,6 +55,11 @@ int Customer::makeOrder( Shop& shop ){
 }
 
 bool Customer::addItemToOrder( Shop& shop, int order_ID, int item_ID, int count ){
+    if( count <= 0 ){
+        cerr << "In Customer::addItemToOrder(): Invalid item quantity. Ignoring." << endl;
+        return false;
+    }
+
     return shop.addItemToOrder( order_ID, item_ID, count );
 }
 
@@ -58,6 +74,10 @@ void Customer::copyAllPendingOrders( const Customer& other ){
 }
 
 bool Customer::payForOrder( Shop& shop, int order_ID, float money_amount ){
+    if( money_amount <= 0 ){
+        cerr << "In Customer::payForOrder(): Invalid item quantity. Ignoring." << endl;
+        return false;
+    }
     return shop.receivePayment( order_ID, money_amount );
 }
 
@@ -109,6 +129,10 @@ ostream& operator<<( ostream& out, const Customer& customer ){
     out << "--------------------" << endl;
     out << "Customer " << customer.ID << ":" << endl;
 
+    out << "Inventory:" << endl;
+    for( long long unsigned int i=0; i < customer.inventory.size(); i++ )
+        cout << customer.inventory[i].first << "\tQuantity: " << customer.inventory[i].second << endl;
+
     long long unsigned int shop_count = customer.pending_orders.size();
 
     for( long long unsigned int i=0; i < shop_count; i++ ){
@@ -141,6 +165,13 @@ ostream& operator<<( ostream& out, const Customer& customer ){
     }
 
     out << endl;
+
+    out << "Order history:" << endl;
+    if( customer.order_history->is_empty() )
+        out << "Empty" << endl;
+    else
+        out << *customer.order_history;
+    
 
     return out;
 }

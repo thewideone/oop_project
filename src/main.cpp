@@ -15,7 +15,7 @@ int main( void ){
 
 	Shop s1("ALABAMA");
 	s1.addItem(i1, 10);
-	s1.addItem(i1, 15);
+	s1.addItem(i1, -15);
 	s1.addItem(i2, 102);
 	cout << s1;
 
@@ -24,6 +24,7 @@ int main( void ){
 
 	c1.addItemToOrder( s1, order_ID, i1.getID(), 5 );
 	c1.addItemToOrder( s1, order_ID, i2.getID(), 100 );
+	c1.addItemToOrder( s1, order_ID, i2.getID(), 10 );
 	float price = s1.getOrderPrice( order_ID );
 	cout << "Order " << order_ID << " price is " << price << endl;
 	c1.payForOrder( s1, order_ID, price );
@@ -33,6 +34,8 @@ int main( void ){
 	c1.printInventory();
 
 	cout << s1;
+
+	cout << c1;
 
 	
 	// Order o5;
