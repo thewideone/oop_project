@@ -5,13 +5,14 @@
 int Order::ID_generator;    // = 0;
 
 // Constructor
-// Order::Order( Customer* customer ){
 Order::Order(){
     ID = ID_generator;
     ID_generator++;
 
     customer = nullptr;
     is_paid = 0;
+
+    date_of_shipment = "";
 
     cout << "Order " << ID << " has been created." << endl;
 }
@@ -21,6 +22,8 @@ Order::Order( const Order& other ){
     ID = other.ID;
     customer = other.customer;
     is_paid = other.is_paid;
+
+    date_of_shipment = other.date_of_shipment;
 
     for (long long unsigned int i=0; i<other.items.size(); i++)
         items.push_back(other.items[i]);
@@ -43,14 +46,32 @@ int Order::getItemCount() const {
 Customer* Order::getCustomer() const {
     return customer;
 }
-int Order::isPaid() const {
+bool Order::isPaid() const {
     return is_paid;
 }
+
+float Order::getTotalPrice() const {
+    float sum = 0.0;
+
+    for( long long unsigned int i=0; i < items.size(); i++ )
+        sum += items[i].first.getPrice() * items[i].second;
+    
+    return sum;
+}
+
+void Order::setPaid(){
+    is_paid = true;
+}
+
+void Order::setDateOfShipment( string date ){
+    date_of_shipment = date;
+}
+
 void Order::print() const {
     cout << *this;
 }
 
-void Order::addItem( Item& item, int count ){
+void Order::addItem( Item item, int count ){
     items.push_back( make_pair( item, count ) );
 }
 
@@ -67,13 +88,15 @@ ostream& operator<<( ostream& out, const Order& order ){
 
     out << "\tCustomer's ID: " << order.getCustomer()->getID() << endl;
 
+    out << "\tPaid: " << (order.is_paid ? "yes" : "no") << endl;
+
     long long unsigned int item_cnt = order.items.size();
     long long unsigned int total_item_cnt=0;
 
     out << "\tIn total " << item_cnt << " different items:" << endl;
 
     for( long long unsigned int i=0; i<item_cnt; i++ ){
-        out << "\t\tID: " << order.items[i].first.getID() << " | Count: " << order.items[i].second << endl;
+        out << "\t\tID: " << order.items[i].first.getID() << " | Quantity: " << order.items[i].second << endl;
         total_item_cnt += order.items[i].second;
     }
 

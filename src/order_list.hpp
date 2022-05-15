@@ -5,7 +5,8 @@
 #include <vector>
 
 #include "order.hpp"
-#include "customer.hpp"
+class Order;
+// #include "customer.hpp"
 
 // #include "item.hpp"
 
@@ -13,7 +14,6 @@ using namespace std;
 
 class OrderList{
 private:
-    int abc;
 public:
     vector<Order> orders;
 

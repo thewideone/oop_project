@@ -10,32 +10,33 @@
 int main( void ){
 	Item i1( 4.20, 1 ), i2( 1.23, 2 );
 	// cout<<i1;
-	Order o1;
+	Order o1, o2;
 	Customer c1,c2;
-	o1.setCustomer(&c2);
-	cout << "assigned " << c1.getID() << endl;
-	
-	o1.addItem( i1, 5 );
-
-	Order o2;
-	o2 = o1;
-
-	cout << o1;
-
-	if( o2 == o1 )
-		cout << "equal\n";
-
-	OrderList l1;
-	l1.addElement(o1);
-	l1.addElement(o2);
-	OrderList l2;
-	l2 = l1;
-	cout << l2;
 
 	Shop s1("ALABAMA");
 	s1.addItem(i1, 10);
+	s1.addItem(i1, 15);
 	s1.addItem(i2, 102);
 	cout << s1;
+
+	int order_ID = c1.makeOrder( s1 );
+	cout << "Created order of ID " << order_ID << endl;
+
+	c1.addItemToOrder( s1, order_ID, i1.getID(), 5 );
+	c1.addItemToOrder( s1, order_ID, i2.getID(), 100 );
+	float price = s1.getOrderPrice( order_ID );
+	cout << "Order " << order_ID << " price is " << price << endl;
+	c1.payForOrder( s1, order_ID, price );
+	cout << s1;
+	s1.sendOrder( order_ID, "15/05/2022" );
+	c1.printInventory();
+
+	cout << s1;
+
+	
+	// Order o5;
+	// o5.setCustomer(&c1);
+	// o5.addItem(i1, 5);
 
 	// Customer c2(c1);
 	// Customer c3;

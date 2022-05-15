@@ -1,11 +1,12 @@
 #include "order_list.hpp"
 
 OrderList::OrderList(){
-
+    cout << "OrderList has been created" << endl;
 }
 
 OrderList::OrderList( const OrderList& other ){
     orders = other.orders;
+    cout << "OrderList has been created using copy constructor" << endl;
 }
 
 OrderList::~OrderList(){
@@ -33,12 +34,14 @@ void OrderList::addElement( const Order& order ){
 
 bool OrderList::findElement( int order_ID, int& idx ) const {
     idx = -1;
+    cout << "OrderList: ";
     for( long long unsigned int i=0; i < orders.size(); i++ )
         if( orders[i].getID() == order_ID ){
-            idx = order_ID;
+            idx = i;
+            cout << "Found order of ID " << order_ID << " at index " << idx << endl;
             return true;
         }
-    
+    cout << "Order of ID " << order_ID << " not found" << endl;
     return false;
 }
 

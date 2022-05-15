@@ -7,6 +7,8 @@ int Customer::ID_generator; // = 0;
 Customer::Customer(){
     ID = ID_generator;
     ID_generator++;
+
+    cout << "Customer " << ID << " has been created" << endl;
 }
 
 Customer::Customer( const Customer& other ){
@@ -15,6 +17,8 @@ Customer::Customer( const Customer& other ){
     collected_order_IDs.clear();
     collected_order_IDs.reserve( other.collected_order_IDs.size() );
     collected_order_IDs = other.collected_order_IDs;
+    inventory = other.inventory;
+    cout << "Customer " << ID << " has been created  using copy constructor" << endl;
 }
 
 Customer::~Customer(){
@@ -26,11 +30,22 @@ int Customer::getID() const {
     return ID;
 }
 
-// bool Customer::makeOrder( const Shop& shop, int &order_ID ){
-//     order_ID = -1;
-//     return true;
-//     // shop.
-// }
+void Customer::addItemToInventory( Item& item, int count ){
+    inventory.push_back( make_pair( item, count ) );
+}
+
+void Customer::addOrderToHistory( Order& order ){
+    // order_history.addElement( order );
+}
+
+int Customer::makeOrder( Shop& shop ){
+    int order_ID = shop.newOrder( this );
+    return order_ID;
+}
+
+bool Customer::addItemToOrder( Shop& shop, int order_ID, int item_ID, int count ){
+    return shop.addItemToOrder( order_ID, item_ID, count );
+}
 
 void Customer::copyAllPendingOrders( const Customer& other ){
     pending_orders.clear();
@@ -40,6 +55,21 @@ void Customer::copyAllPendingOrders( const Customer& other ){
         pending_orders[i].first  = other.pending_orders[i].first;
         pending_orders[i].second = other.pending_orders[i].second;
     }
+}
+
+bool Customer::payForOrder( Shop& shop, int order_ID, float money_amount ){
+    return shop.receivePayment( order_ID, money_amount );
+}
+
+void Customer::addCollectedOrderID( int order_ID ){
+    collected_order_IDs.push_back( order_ID );
+}
+
+void Customer::printInventory(){
+    cout << "--------------------" << endl;
+    cout << "Customer " << ID << ": inventory:" << endl;
+    for( long long unsigned int i=0; i < inventory.size(); i++ )
+        cout << inventory[i].first << "\tQuantity: " << inventory[i].second << endl;
 }
 
 Customer& Customer::operator=( const Customer& other ){
@@ -76,6 +106,7 @@ bool Customer::operator!=( const Customer& other ) const {
 }
 
 ostream& operator<<( ostream& out, const Customer& customer ){
+    out << "--------------------" << endl;
     out << "Customer " << customer.ID << ":" << endl;
 
     long long unsigned int shop_count = customer.pending_orders.size();

@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 
-// #include "customer.hpp"
+class Customer;
+class OrderList;
+
+#include "customer.hpp"
 #include "order_list.hpp"
 #include "item.hpp"
 
@@ -19,10 +22,10 @@ private:
     string name;
     //       item ID, item count
     vector<pair<Item,int>> magazine;
-    vector<int> sent_order_IDs;
-    OrderList pending_orders;
+    // OrderList* order_history;
+    OrderList* pending_orders;
 
-    // bool findOrder( int order_ID, int& idx ) const;
+    bool findOrder( int order_ID, int& idx ) const;
 
 public:
     Shop( string name );
@@ -31,19 +34,20 @@ public:
 
     string getName() const;
     void setName( string new_name );
+    float getOrderPrice( int order_ID ) const;  // returns price of found order or -1.0 if not found
 
     // void printMagazine() const;
     // Magazine operations:
     void addItem( Item& item, int count );
-    bool removeItem( int item_ID );                 // returns 0 if item was not found
-    bool findItem( int item_ID, int& idx ) const;   // idx is the index of the found item, -1 if not found
-    bool sellItem( int item_ID, Item& item, int count );    // returns 0 if item was not found
-    // bool takeItem( int item_ID, Item& item );       // returns 0 if item was not found
+    // bool removeItem( int item_ID );                  // returns 0 if item was not found
+    bool findItem( int item_ID, int& idx ) const;       // idx is the index of the found item, -1 if not found
+    bool removeItemFromMagazine( int item_ID, Item& item, int count );// returns 0 if item was not found
     void removeAllItems();
 
-    // void newOrder( Customer* customer, int& order_ID ); // assigns ID of newly created order to "order_ID"
-    // bool addItemToOrder( int order_ID, int item_ID, int count );
-    bool sendOrder( int order_ID );
+    int newOrder( Customer* customer );     // returns ID of a newly created order
+    bool addItemToOrder( int order_ID, int item_ID, int count );
+    bool receivePayment( int order_ID, float money_amount );    // returns true if payment was successful
+    bool sendOrder( int order_ID, string date_of_shipment );
 
     Shop& operator=( const Shop& shop );
 

@@ -5,7 +5,11 @@
 #include <vector>
 #include <utility>
 
-// #include "shop.hpp"
+#include "order.hpp"
+#include "order_list.hpp"
+#include "shop.hpp"
+#include "item.hpp"
+class Shop;
 
 using namespace std;
 
@@ -23,6 +27,9 @@ private:
     //       shop ID, IDs of orders
     vector< pair<int, vector<int>> > pending_orders;
     vector<int> collected_order_IDs;
+    OrderList order_history;    // list of already filled orders
+
+    vector< pair<Item, int> > inventory; // items in the possession of the customer and their count
 
     void copyAllPendingOrders( const Customer& other );
 
@@ -32,8 +39,17 @@ public:
     ~Customer();
     int getID() const;
 
-    // // bool makeOrder( const Shop& shop, int &order_ID );
-    // // bool addItemToOrder( const Shop& shop, int &order_ID, int item_ID, int count );
+    void addItemToInventory( Item& item, int count );
+    void addOrderToHistory( Order& order );
+
+    int makeOrder( Shop& shop );    // returns ID of a newly created order
+    bool addItemToOrder( Shop& shop, int order_ID, int item_ID, int count );
+
+    bool payForOrder( Shop& shop, int order_ID, float money_amount );
+
+    void addCollectedOrderID( int order_ID );
+
+    void printInventory();
 
     Customer& operator=( const Customer& other );
     bool operator==( const Customer& other ) const;

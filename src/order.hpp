@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "customer.hpp"
+class Customer;
 #include "item.hpp"
 
 using namespace std;
@@ -17,6 +18,7 @@ private:
                                 // automatically initialized to 0
     Customer* customer; // pointer to the customer making the order
     bool is_paid;
+    string date_of_shipment;
     
 public:
     vector<pair<Item, int>> items;
@@ -28,12 +30,15 @@ public:
     int getID() const;
     int getItemCount() const;
     Customer* getCustomer() const;    // returns pointer to the customer
-    int isPaid() const;
+    bool isPaid() const;
+    float getTotalPrice() const; // returns the price of all items in the order
 
     // void setPaid( bool state );
     void setCustomer( Customer* customer );
+    void setPaid();
+    void setDateOfShipment( string date );
 
-    void addItem( Item& item, int count );
+    void addItem( Item item, int count );
     void removeAllItems();
 
     void print() const;

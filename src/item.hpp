@@ -15,7 +15,7 @@ class Item {
 	public:
 		Item( float price, int exp_date );
 		Item( const Item& other );
-		//~Item();
+		// ~Item();
 		int getID() const;
 		float getPrice() const;
 		int getExiprationDate() const;
