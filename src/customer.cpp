@@ -16,19 +16,24 @@ Customer::Customer(){
 Customer::Customer( const Customer& other ){
     ID = other.ID;
     copyAllPendingOrders( other );
-    collected_order_IDs.clear();
-    collected_order_IDs.reserve( other.collected_order_IDs.size() );
-    collected_order_IDs = other.collected_order_IDs;
+    cout << "Copied all pending orders\n";
+    // collected_order_IDs.clear();
+    // collected_order_IDs.reserve( other.collected_order_IDs.size() );
+    // collected_order_IDs = other.collected_order_IDs;
+    inventory.reserve( other.inventory.size() );
     inventory = other.inventory;
+    cout << "Copied inventory\n";
 
-    order_history->orders = other.order_history->orders;
+    order_history = new OrderList(*other.order_history);
+
+    // order_history->orders = other.order_history->orders;
 
     cout << "Customer " << ID << " has been created  using copy constructor" << endl;
 }
 
 Customer::~Customer(){
     pending_orders.clear();
-    collected_order_IDs.clear();
+    // collected_order_IDs.clear();
     delete order_history;
 }
 
@@ -98,9 +103,18 @@ Customer& Customer::operator=( const Customer& other ){
     
     ID = other.ID;
     copyAllPendingOrders( other );
-    collected_order_IDs.clear();
-    collected_order_IDs.reserve( other.collected_order_IDs.size() );
-    collected_order_IDs = other.collected_order_IDs;
+    // collected_order_IDs.clear();
+    // collected_order_IDs.reserve( other.collected_order_IDs.size() );
+    // collected_order_IDs = other.collected_order_IDs;
+    inventory.clear();
+    inventory.reserve( other.inventory.size() );
+    inventory = other.inventory;
+
+    order_history->orders.clear();
+    delete order_history;
+    order_history = new OrderList(*other.order_history);
+
+    cout << "Customer " << ID << " has been created by copy constructor" << endl;
 
     return *this;
 }
@@ -109,16 +123,21 @@ bool Customer::operator==( const Customer& other ) const {
     if( this == &other )
         return true;
     
-    if( ID == other.ID ){
-        for( long long unsigned int i=0; i < other.collected_order_IDs.size(); i++ )
-            if( collected_order_IDs[i] != other.collected_order_IDs[i] )
-                return false;
-        for( long long unsigned int i=0; i < other.pending_orders.size(); i++ )
-            if( pending_orders[i].second != other.pending_orders[i].second )
-                return false;
-    }
+    if( ID == other.ID && pending_orders == other.pending_orders &&
+        *order_history == *other.order_history && inventory == other.inventory )
+        return true;
+    return false;
+    
+    // if( ID == other.ID ){
+    //     for( long long unsigned int i=0; i < other.collected_order_IDs.size(); i++ )
+    //         if( collected_order_IDs[i] != other.collected_order_IDs[i] )
+    //             return false;
+    //     for( long long unsigned int i=0; i < other.pending_orders.size(); i++ )
+    //         if( pending_orders[i].second != other.pending_orders[i].second )
+    //             return false;
+    // }
 
-    return true;
+    // return true;
 }
 
 bool Customer::operator!=( const Customer& other ) const {
@@ -152,17 +171,17 @@ ostream& operator<<( ostream& out, const Customer& customer ){
         out << endl;
     }
 
-    long long unsigned int collected_order_cnt = customer.collected_order_IDs.size();
+    // long long unsigned int collected_order_cnt = customer.collected_order_IDs.size();
 
-    out << "\tIDs of collected orders: ";
+    // out << "\tIDs of collected orders: ";
 
-    if( customer.collected_order_IDs.empty() )
-            out << "Empty";
-    else{
-        out << customer.collected_order_IDs[0];
-        for( long long unsigned int i=0; i < collected_order_cnt; i++ )
-            out << ", " << customer.collected_order_IDs[i];
-    }
+    // if( customer.collected_order_IDs.empty() )
+    //         out << "Empty";
+    // else{
+    //     out << customer.collected_order_IDs[0];
+    //     for( long long unsigned int i=0; i < collected_order_cnt; i++ )
+    //         out << ", " << customer.collected_order_IDs[i];
+    // }
 
     out << endl;
 

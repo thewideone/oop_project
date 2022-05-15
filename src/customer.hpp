@@ -27,7 +27,7 @@ private:
 
     //       shop ID, IDs of orders
     vector< pair<int, vector<int>> > pending_orders;
-    vector<int> collected_order_IDs;
+    // vector<int> collected_order_IDs;
     OrderList* order_history;    // list of already filled orders
 
     vector< pair<Item, int> > inventory; // items in the possession of the customer and their count

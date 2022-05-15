@@ -21,16 +21,16 @@ void OrderList::addElement( const Order& order ){
     orders.push_back( order );
 }
 
-// OrderList& OrderList::operator=( const OrderList& other ){
-//     // Check for self-assignment
-//     if( this == &other )
-//         return *this;
+OrderList& OrderList::operator=( const OrderList& other ){
+    // Check for self-assignment
+    if( this == &other )
+        return *this;
     
-//     removeAllElements();
-//     orders.reserve( other.orders.size() );
-//     orders = other.orders;
-//     return *this;
-// }
+    removeAllElements();
+    orders.reserve( other.orders.size() );
+    orders = other.orders;
+    return *this;
+}
 
 bool OrderList::findElement( int order_ID, int& idx ) const {
     idx = -1;
@@ -67,9 +67,27 @@ void OrderList::removeAllElements(){
     orders.clear();
 }
 
-OrderList& OrderList::operator=( const OrderList& other ){
-    orders = other.orders;
-    return *this;
+// OrderList& OrderList::operator=( const OrderList& other ){
+//     // Check for self-assignment
+//     if( this == &other )
+//         return true;
+    
+//     orders = other.orders;
+//     return *this;
+// }
+
+bool OrderList::operator==( const OrderList& other ) const {
+    // Check for self-assignment
+    if( this == &other )
+        return true;
+
+    if( orders == other.orders )
+        return true;
+    return false;
+}
+
+bool OrderList::operator!=( const OrderList& other ) const {
+    return !(*this == other);
 }
 
 ostream& operator<<( ostream& out, const OrderList& list ){

@@ -32,8 +32,8 @@ public:
                                             // given ID in "orders" vector
 
     OrderList& operator=( const OrderList& other );
-    // int operator==( const OrderList& other ) const;
-    // int operator!=( const OrderList& other ) const;
+    bool operator==( const OrderList& other ) const;
+    bool operator!=( const OrderList& other ) const;
 
     // void print() const;
 

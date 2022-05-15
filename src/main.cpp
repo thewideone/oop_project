@@ -22,7 +22,7 @@ int main( void ){
 	int order_ID = c1.makeOrder( s1 );
 	cout << "Created order of ID " << order_ID << endl;
 
-	c1.addItemToOrder( s1, order_ID, i1.getID(), 5 );
+	c1.addItemToOrder( s1, order_ID, i1.getID(), 12 );
 	c1.addItemToOrder( s1, order_ID, i2.getID(), 100 );
 	c1.addItemToOrder( s1, order_ID, i2.getID(), 10 );
 	float price = s1.getOrderPrice( order_ID );

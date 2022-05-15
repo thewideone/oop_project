@@ -17,7 +17,7 @@ Item::Item( const Item& other ){
 
     price = other.price;
     expiration_date = other.expiration_date;
-    cout << "Item " << ID << " was created by copy constructor" << endl;
+    cout << "Item " << ID << " has been created by copy constructor" << endl;
 }
 
 int Item::getID() const {
