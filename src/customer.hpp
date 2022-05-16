@@ -25,14 +25,16 @@ private:
     //     vector<int> IDs;
     // };
 
-    //       shop ID, IDs of orders
-    vector< pair<int, vector<int>> > pending_orders;
+    //    shop pointer, list of IDs of orders
+    // vector< pair<Shop*, vector<int>> > pending_orders;
+    OrderList* pending_orders;
     // vector<int> collected_order_IDs;
     OrderList* order_history;    // list of already filled orders
 
     vector< pair<Item, int> > inventory; // items in the possession of the customer and their count
 
-    void copyAllPendingOrders( const Customer& other );
+    // void copyAllPendingOrders( const Customer& other );
+    bool addToPendingOrders( const Shop& shop, const Order& order );
 
 public:
     Customer();
@@ -42,9 +44,10 @@ public:
 
     void addItemToInventory( Item& item, int count );
     void addOrderToHistory( Order& order );
+    void removeOrderFromPending( int order_ID );    // remove an order of given ID from the list of pending orders
 
     int makeOrder( Shop& shop );    // returns ID of a newly created order
-    bool addItemToOrder( Shop& shop, int order_ID, int item_ID, int count );
+    bool addItemToOrder( Shop& shop, int order_ID, const Item& item, int count );
 
     bool payForOrder( Shop& shop, int order_ID, float money_amount );
 

@@ -20,6 +20,7 @@ private:
     Customer* customer; // pointer to the customer making the order
     bool is_paid;
     string date_of_shipment;
+    string shop_name;
     
 public:
     vector<pair<Item, int>> items;
@@ -33,11 +34,13 @@ public:
     Customer* getCustomer() const;    // returns pointer to the customer
     bool isPaid() const;
     float getTotalPrice() const; // returns the price of all items in the order
-    string getDateOfShipment();
+    string getDateOfShipment() const;
+    string getShopName() const;
 
     void setCustomer( Customer* customer );
     void setPaid();
     void setDateOfShipment( string date );
+    void setShopName( string name );
 
     void addItem( Item item, int count );
     void removeAllItems();

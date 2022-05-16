@@ -22,9 +22,9 @@ int main( void ){
 	int order_ID = c1.makeOrder( s1 );
 	cout << "Created order of ID " << order_ID << endl;
 
-	c1.addItemToOrder( s1, order_ID, i1.getID(), 12 );
-	c1.addItemToOrder( s1, order_ID, i2.getID(), 100 );
-	c1.addItemToOrder( s1, order_ID, i2.getID(), 10 );
+	c1.addItemToOrder( s1, order_ID, i1, 12 );
+	c1.addItemToOrder( s1, order_ID, i2, 100 );
+	c1.addItemToOrder( s1, order_ID, i2, 10 );
 	float price = s1.getOrderPrice( order_ID );
 	cout << "Order " << order_ID << " price is " << price << endl;
 	cout << c1;
@@ -37,6 +37,25 @@ int main( void ){
 
 	cout << s1;
 	cout << c1;
+
+	cout << "===== NEW ORDER =====" << endl;
+	Item i3( 12.34, 6 ), i4( 56.78, 9 );
+
+	Shop s2("ACME");
+	s2.addItem( i3, 5 );
+	s2.addItem( i4, 8 );
+	cout << s2;
+
+	cout << "Making an order...\n";
+	int order2_ID = c1.makeOrder( s2 );
+	c1.addItemToOrder( s2, order2_ID, i3, 6 );
+	c1.addItemToOrder( s2, order2_ID, i4, 7);
+	cout << c1;
+	cout << "Paying for the order...\n";
+	c1.payForOrder( s2, order2_ID, s2.getOrderPrice( order2_ID ) );
+	cout << "Sending the order...\n";
+	s2.sendOrder( order2_ID, "16/05/2022" );
+	cout << s2 << c1;
 
 	
 	// Order o5;

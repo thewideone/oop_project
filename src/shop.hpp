@@ -11,6 +11,9 @@ class OrderList;
 #include "customer.hpp"
 #include "order_list.hpp"
 #include "item.hpp"
+#include "order.hpp"
+
+class Order;
 
 using namespace std;
 
@@ -25,7 +28,8 @@ private:
     OrderList* order_history;
     OrderList* pending_orders;
 
-    bool findOrder( int order_ID, int& idx ) const;
+    bool findPendingOrder( int order_ID, int& idx ) const;
+    bool findHistoryOrder( int order_ID, int& idx ) const;
 
 public:
     Shop( string name );
@@ -34,6 +38,8 @@ public:
 
     string getName() const;
     void setName( string new_name );
+    bool getOrder( int order_ID, Order& order ) const;  // returns true if the order of given ID was found
+                                                        // and assigns a copy of the order in "order" parameter
     float getOrderPrice( int order_ID ) const;  // returns price of found order or -1.0 if not found
 
     // void printMagazine() const;

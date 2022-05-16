@@ -13,6 +13,7 @@ Order::Order(){
     is_paid = 0;
 
     date_of_shipment = "";
+    shop_name = "";
 
     dout << "Order " << ID << " has been created." << endl;
 }
@@ -24,6 +25,7 @@ Order::Order( const Order& other ){
     is_paid = other.is_paid;
 
     date_of_shipment = other.date_of_shipment;
+    shop_name = other.shop_name;
 
     for (long long unsigned int i=0; i<other.items.size(); i++)
         items.push_back(other.items[i]);
@@ -67,8 +69,16 @@ void Order::setDateOfShipment( string date ){
     date_of_shipment = date;
 }
 
-string Order::getDateOfShipment(){
+string Order::getDateOfShipment() const {
     return date_of_shipment;
+}
+
+void Order::setShopName( string name ){
+    shop_name = name;
+}
+
+string Order::getShopName() const {
+    return shop_name;
 }
 
 void Order::print() const {

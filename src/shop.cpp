@@ -39,10 +39,24 @@ float Shop::getOrderPrice( int order_ID ) const {
 
     dout << "Shop " << name << ": ";
 
-    if( findOrder( order_ID, order_idx ) )
+    if( findPendingOrder( order_ID, order_idx ) )
         return pending_orders->orders[order_idx].getTotalPrice();
     
     return -1.0;
+}
+
+bool Shop::getOrder( int order_ID, Order& order ) const {
+    int order_idx = -1;
+    if( findPendingOrder( order_ID, order_idx ) ){
+        order = pending_orders->orders[order_idx];
+        return true;
+    }
+    if( findHistoryOrder( order_ID, order_idx ) ){
+        order = order_history->orders[order_idx];
+        return true;
+    }
+    cerr << "Shop " << name << ": Order of ID " << order_ID << " not found" << endl;
+    return false;
 }
 
 void Shop::addItem( Item& item, int count ){
@@ -118,6 +132,7 @@ bool Shop::removeItemFromMagazine( int item_ID, Item& item, int count ){
 int Shop::newOrder( Customer* customer ){
     Order order;
     order.setCustomer( customer );
+    order.setShopName( name );
 
     int order_ID = order.getID();
     pending_orders->addElement( order );
@@ -125,9 +140,14 @@ int Shop::newOrder( Customer* customer ){
     return order_ID;
 }
 
-bool Shop::findOrder( int order_ID, int& idx ) const {
+bool Shop::findPendingOrder( int order_ID, int& idx ) const {
     idx = -1;
     return pending_orders->findElement( order_ID, idx );
+}
+
+bool Shop::findHistoryOrder( int order_ID, int& idx ) const {
+    idx = -1;
+    return order_history->findElement( order_ID, idx );
 }
 
 bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
@@ -141,7 +161,7 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
 
     dout << "Shop " << name << ": ";
 
-    if( findOrder( order_ID, order_idx ) ){
+    if( findPendingOrder( order_ID, order_idx ) ){
         int item_idx = -1;
         if( findItem( item_ID, item_idx ) ){
 
@@ -173,7 +193,7 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
                     pending_orders->orders[order_idx].addItem( magazine[item_idx].first, magazine[item_idx].second );
                 else
                     // Should not be possible
-                    dout << "!!!Item count = 0 in magazine!!!\n";
+                    cerr << "!!!Item count = 0 in magazine!!!\n";
             }
 
             dout << "Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
@@ -193,7 +213,7 @@ bool Shop::sendOrder( int order_ID, string date_of_shipment ){
     bool ret_val = false;
     int order_idx = -1;
 
-    if( findOrder( order_ID, order_idx ) ){
+    if( findPendingOrder( order_ID, order_idx ) ){
         if( pending_orders->orders[order_idx].isPaid() ){
             for( long long unsigned int i=0; i < pending_orders->orders[order_idx].items.size(); i++ ){
                 Item item = pending_orders->orders[order_idx].items[i].first;
@@ -214,6 +234,7 @@ bool Shop::sendOrder( int order_ID, string date_of_shipment ){
             Order order = pending_orders->orders[order_idx];
             order_history->addElement( order );
             pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
+            pending_orders->orders[order_idx].getCustomer()->removeOrderFromPending( order.getID() );
             // Remove the order from pending order list of the shop
             pending_orders->removeElement( order_ID );
             dout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;
@@ -237,11 +258,12 @@ bool Shop::receivePayment( int order_ID, float money_amount ){
 
     dout << "Shop " << name << ": ";
 
-    if( findOrder( order_ID, idx ) ){
+    if( findPendingOrder( order_ID, idx ) ){
         dout << "Shop " << name << ": ";
         if( money_amount == pending_orders->orders[idx].getTotalPrice() ){
             pending_orders->orders[idx].setPaid();
             dout << "Successufully paid for order " << order_ID << endl;
+            ret_val = true;
         }
         else if ( money_amount > pending_orders->orders[idx].getTotalPrice() )
             dout << "Customer of ID " << pending_orders->orders[idx].getCustomer()->getID()
