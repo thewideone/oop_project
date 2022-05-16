@@ -27,14 +27,15 @@ int main( void ){
 	c1.addItemToOrder( s1, order_ID, i2.getID(), 10 );
 	float price = s1.getOrderPrice( order_ID );
 	cout << "Order " << order_ID << " price is " << price << endl;
+	cout << c1;
 	c1.payForOrder( s1, order_ID, price );
-	cout << s1;
-	// s1.sendOrder( order_ID, "15/05/2022" );
-	s1.sendOrder( order_ID );
-	c1.printInventory();
+	// cout << s1;
+	cout << c1;
+	s1.sendOrder( order_ID, "15/05/2022" );
+	// s1.sendOrder( order_ID );
+	// c1.printInventory();
 
 	cout << s1;
-
 	cout << c1;
 
 	

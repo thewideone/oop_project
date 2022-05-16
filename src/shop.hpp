@@ -47,8 +47,8 @@ public:
     int newOrder( Customer* customer );     // returns ID of a newly created order
     bool addItemToOrder( int order_ID, int item_ID, int count );
     bool receivePayment( int order_ID, float money_amount );    // returns true if payment was successful
-    // bool sendOrder( int order_ID, string date_of_shipment );
-    bool sendOrder( int order_ID );
+    bool sendOrder( int order_ID, string date_of_shipment );
+    // bool sendOrder( int order_ID );
 
     Shop& operator=( const Shop& shop );
 

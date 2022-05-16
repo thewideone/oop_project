@@ -153,6 +153,7 @@ ostream& operator<<( ostream& out, const Customer& customer ){
         out << customer.inventory[i].first << "\tQuantity: " << customer.inventory[i].second << endl;
 
     long long unsigned int shop_count = customer.pending_orders.size();
+    out << "shop cnt: " << shop_count << endl;
 
     for( long long unsigned int i=0; i < shop_count; i++ ){
         int shop_ID = customer.pending_orders[i].first;
@@ -162,7 +163,7 @@ ostream& operator<<( ostream& out, const Customer& customer ){
         out << "\t\t";
 
         if( customer.pending_orders[i].second.empty() )
-            out << "Empty";
+            out << "None";
         else {
             out << customer.pending_orders[i].second[0];
             for( long long unsigned int order_ID=1; order_ID < order_count; order_ID++ )
@@ -183,13 +184,11 @@ ostream& operator<<( ostream& out, const Customer& customer ){
     //         out << ", " << customer.collected_order_IDs[i];
     // }
 
-    out << endl;
-
-    out << "Order history:" << endl;
+    out << "Collected orders:";
     if( customer.order_history->is_empty() )
-        out << "Empty" << endl;
+        out << " None" << endl;
     else
-        out << *customer.order_history;
+        out << endl << *customer.order_history;
     
 
     return out;

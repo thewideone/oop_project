@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <string>
 
 #include "customer.hpp"
 class Customer;
@@ -18,7 +19,7 @@ private:
                                 // automatically initialized to 0
     Customer* customer; // pointer to the customer making the order
     bool is_paid;
-    // string date_of_shipment;
+    string date_of_shipment;
     
 public:
     vector<pair<Item, int>> items;
@@ -32,11 +33,11 @@ public:
     Customer* getCustomer() const;    // returns pointer to the customer
     bool isPaid() const;
     float getTotalPrice() const; // returns the price of all items in the order
+    string getDateOfShipment();
 
-    // void setPaid( bool state );
     void setCustomer( Customer* customer );
     void setPaid();
-    // void setDateOfShipment( string date );
+    void setDateOfShipment( string date );
 
     void addItem( Item item, int count );
     void removeAllItems();

@@ -12,7 +12,7 @@ Order::Order(){
     customer = nullptr;
     is_paid = 0;
 
-    // date_of_shipment = "";
+    date_of_shipment = "";
 
     dout << "Order " << ID << " has been created." << endl;
 }
@@ -23,7 +23,7 @@ Order::Order( const Order& other ){
     customer = other.customer;
     is_paid = other.is_paid;
 
-    // date_of_shipment = other.date_of_shipment;
+    date_of_shipment = other.date_of_shipment;
 
     for (long long unsigned int i=0; i<other.items.size(); i++)
         items.push_back(other.items[i]);
@@ -63,9 +63,13 @@ void Order::setPaid(){
     is_paid = true;
 }
 
-// void Order::setDateOfShipment( string date ){
-//     date_of_shipment = date;
-// }
+void Order::setDateOfShipment( string date ){
+    date_of_shipment = date;
+}
+
+string Order::getDateOfShipment(){
+    return date_of_shipment;
+}
 
 void Order::print() const {
     cout << *this;
@@ -90,8 +94,12 @@ ostream& operator<<( ostream& out, const Order& order ){
 
     out << "\tPaid: " << (order.is_paid ? "yes" : "no") << endl;
 
-    // if( order.date_of_shipment != "" )
-    //     out << "Date of shipment: " << order.date_of_shipment << endl;
+    out << "\tDate of shipment: ";
+
+    if( order.date_of_shipment == "" )
+        out << "Not shipped yet" << endl;
+    else
+        out << order.date_of_shipment << endl;
 
     long long unsigned int item_cnt = order.items.size();
     long long unsigned int total_item_cnt=0;

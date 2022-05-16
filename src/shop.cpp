@@ -188,8 +188,8 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
     return ret_val;
 }
 
-// bool Shop::sendOrder( int order_ID, string date_of_shipment ){
-bool Shop::sendOrder( int order_ID ){
+bool Shop::sendOrder( int order_ID, string date_of_shipment ){
+// bool Shop::sendOrder( int order_ID ){
     bool ret_val = false;
     int order_idx = -1;
 
@@ -209,7 +209,7 @@ bool Shop::sendOrder( int order_ID ){
                     dout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID " << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
             }
             // Set date of shipment of the order
-            // pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
+            pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
             // Add the order to histories of orders of the shop and the customer
             Order order = pending_orders->orders[order_idx];
             order_history->addElement( order );
@@ -271,18 +271,18 @@ ostream& operator<<( ostream& out, const Shop& shop ){
         out << "\tQuantity: " << shop.magazine[i].second << endl;
     }
 
-    out << "Sent orders:" << endl;
+    out << "Sent orders:";
     if( shop.order_history->is_empty() )
-        out << "Empty" << endl;
+        out << " None" << endl;
     else{
-        out << *shop.order_history << endl;
+        out << endl << *shop.order_history;
     }
 
-    out << "Pending orders:" << endl;
+    out << "Pending orders:";
     if( shop.pending_orders->is_empty() )
-        out << "Empty" << endl;
+        out  << " None" << endl;
     else
-        out << *shop.pending_orders << endl;
+        out << endl << *shop.pending_orders;
     
     return out;
 }
