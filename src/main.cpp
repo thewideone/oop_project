@@ -57,6 +57,16 @@ int main( void ){
 	s2.sendOrder( order2_ID, "16/05/2022" );
 	cout << s2 << c1;
 
+	if( c1 == c2 )
+		cout << "c1 == c2\n";
+	else
+		cout << "c1 != c2\n";
+	c2 = c1;
+	if( c1 == c2 )
+		cout << "c1 == c2\n";
+	else
+		cout << "c1 != c2\n";
+
 	
 	// Order o5;
 	// o5.setCustomer(&c1);

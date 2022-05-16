@@ -10,13 +10,15 @@ Item::Item( float price, int exp_date ){
 
     this->price = price;
     expiration_date = exp_date;
+
+    dout << "Item " << ID << " has been created" << endl;
 }
 
 Item::Item( const Item& other ){
     ID = other.ID;
-
     price = other.price;
     expiration_date = other.expiration_date;
+
     dout << "Item " << ID << " has been created by copy constructor" << endl;
 }
 
@@ -37,6 +39,7 @@ bool Item::setPrice( float new_price ){
         return false;
     
     price = new_price;
+
     return true;
 }
 
@@ -45,12 +48,14 @@ bool Item::setExiprationDate( int new_date ){
         return false;
     
     expiration_date = new_date;
+
     return true;
 }
 
 Item& Item::operator=( const Item& other ){
     if( this == &other )
         return *this;
+    
     ID = other.ID;
     price = other.price;
     expiration_date = other.expiration_date;
@@ -61,7 +66,9 @@ Item& Item::operator=( const Item& other ){
 bool Item::operator==( const Item& other ) const {
     if( this == &other )
         return true;
-    if( ID == other.ID && price == other.price && expiration_date == other.expiration_date )
+    if( ID == other.ID &&
+        price == other.price &&
+        expiration_date == other.expiration_date )
         return true;
     return false;
 }
@@ -69,12 +76,6 @@ bool Item::operator==( const Item& other ) const {
 bool Item::operator!=( const Item& other ) const {
     return !(*this == other);
 }
-
-// void Item::print( int tab_cnt ){
-//     for( int i=0; i < tab_cnt; i++ )
-//         dout << "\t";
-//     dout << *this;
-// }
 
 ostream& operator<<( ostream& out, const Item& item ){
     out << "Item " << item.ID << ":" << endl;

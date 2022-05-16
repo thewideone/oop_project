@@ -21,36 +21,22 @@ void OrderList::addElement( const Order& order ){
     orders.push_back( order );
 }
 
-OrderList& OrderList::operator=( const OrderList& other ){
-    // Check for self-assignment
-    if( this == &other )
-        return *this;
-    
-    removeAllElements();
-    orders.reserve( other.orders.size() );
-    orders = other.orders;
-    return *this;
-}
-
 bool OrderList::findElement( int order_ID, int& idx ) const {
     idx = -1;
+
     dout << "OrderList: ";
+
     for( long long unsigned int i=0; i < orders.size(); i++ )
         if( orders[i].getID() == order_ID ){
             idx = i;
             dout << "Found order of ID " << order_ID << " at index " << idx << endl;
             return true;
         }
+
     dout << "Order of ID " << order_ID << " not found" << endl;
+
     return false;
 }
-
-// int OrderList::findIndex( int order_ID ) const {
-//     int idx = -1;
-//     if( findElement( order_ID, idx ) )
-//         return idx;
-//     return 
-// }
 
 bool OrderList::removeElement( int order_ID ){
     int idx = -1;
@@ -67,14 +53,16 @@ void OrderList::removeAllElements(){
     orders.clear();
 }
 
-// OrderList& OrderList::operator=( const OrderList& other ){
-//     // Check for self-assignment
-//     if( this == &other )
-//         return true;
+OrderList& OrderList::operator=( const OrderList& other ){
+    // Check for self-assignment
+    if( this == &other )
+        return *this;
     
-//     orders = other.orders;
-//     return *this;
-// }
+    removeAllElements();
+    orders.reserve( other.orders.size() );
+    orders = other.orders;
+    return *this;
+}
 
 bool OrderList::operator==( const OrderList& other ) const {
     // Check for self-assignment
@@ -90,8 +78,8 @@ bool OrderList::operator!=( const OrderList& other ) const {
     return !(*this == other);
 }
 
-ostream& operator<<( ostream& out, const OrderList& list ){
-    for( long long unsigned int i=0; i < list.orders.size(); i++ )
-        out << list.orders[i];
+ostream& operator<<( ostream& out, const OrderList& order_list ){
+    for( long long unsigned int i=0; i < order_list.orders.size(); i++ )
+        out << order_list.orders[i];
     return out;
 }

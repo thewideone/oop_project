@@ -21,14 +21,12 @@ class Item {
 		int getID() const;
 		float getPrice() const;
 		int getExiprationDate() const;
-		bool setPrice( float new_price );		// returns 0 if unsuccessful
-		bool setExiprationDate( int new_date );	// returns 0 if unsuccessful
+		bool setPrice( float new_price );		// returns true if operation succeeded
+		bool setExiprationDate( int new_date );	// returns true if operation succeeded
 
 		Item& operator=( const Item& other );
 		bool operator==( const Item& other ) const;
 		bool operator!=( const Item& other ) const;
-
-		// void print( int tab_cnt );
 
 		friend ostream& operator<<( ostream& out, const Item& item );
 };

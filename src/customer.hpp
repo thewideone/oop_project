@@ -18,23 +18,13 @@ using namespace std;
 class Customer{
 private:
     int ID;
-    static int ID_generator; // static variables are
-                             // automatically initialized to 0
+    static int ID_generator;    // static variables are
+                                // automatically initialized to 0
 
-    // struct shop_orders{
-    //     vector<int> IDs;
-    // };
-
-    //    shop pointer, list of IDs of orders
-    // vector< pair<Shop*, vector<int>> > pending_orders;
-    OrderList* pending_orders;
-    // vector<int> collected_order_IDs;
-    OrderList* order_history;    // list of already filled orders
+    OrderList* pending_orders;  // list of pending orders
+    OrderList* order_history;   // list of already collected orders
 
     vector< pair<Item, int> > inventory; // items in the possession of the customer and their count
-
-    // void copyAllPendingOrders( const Customer& other );
-    bool addToPendingOrders( const Shop& shop, const Order& order );
 
 public:
     Customer();
@@ -43,25 +33,22 @@ public:
     int getID() const;
 
     void addItemToInventory( Item& item, int count );
+    void addOrderToPending( Order& order );
     void addOrderToHistory( Order& order );
     void removeOrderFromPending( int order_ID );    // remove an order of given ID from the list of pending orders
 
     int makeOrder( Shop& shop );    // returns ID of a newly created order
-    bool addItemToOrder( Shop& shop, int order_ID, const Item& item, int count );
+    bool addItemToOrder( Shop& shop, int order_ID, const Item& item, int count );   // returns true if operation succeeded
 
-    bool payForOrder( Shop& shop, int order_ID, float money_amount );
-
-    // void addCollectedOrderID( int order_ID );
-
-    void printInventory();
+    bool payForOrder( Shop& shop, int order_ID, float money_amount );   // returns true if operation succeeded
 
     Customer& operator=( const Customer& other );
     bool operator==( const Customer& other ) const;
     bool operator!=( const Customer& other ) const;
 
-    // void printPendingOrders() const;
-    // void printCollectedOrders() const;
-    // void print() const;
+    void printInventory() const;
+    void printPendingOrders() const;
+    void printCollectedOrders() const;
 
     friend ostream& operator<<( ostream& out, const Customer& customer );
 };

@@ -14,6 +14,7 @@ using namespace std;
 
 class OrderList{
 private:
+    // No private members
 public:
     vector<Order> orders;
 
@@ -24,12 +25,11 @@ public:
     bool is_empty() const;
 
     void addElement( const Order& order );
-    bool removeElement( int order_ID );
+    bool removeElement( int order_ID ); // returns true if operation successful
     void removeAllElements();
 
+    // Returns true if element found and its index in "idx"
     bool findElement( int order_ID, int& idx ) const; // idx set to -1 by default
-    // int findIndex( int order_ID ) const;    // returns index of an order of
-                                            // given ID in "orders" vector
 
     OrderList& operator=( const OrderList& other );
     bool operator==( const OrderList& other ) const;
@@ -37,7 +37,7 @@ public:
 
     // void print() const;
 
-    friend ostream& operator<<( ostream& out, const OrderList& list );
+    friend ostream& operator<<( ostream& out, const OrderList& order_list );
 };
 
 #endif /* _ORDER_LIST_HPP_ */

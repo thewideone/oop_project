@@ -24,9 +24,9 @@ private:
 
     string name;
     //       item ID, item count
-    vector<pair<Item,int>> magazine;
-    OrderList* order_history;
+    vector<pair<Item,int>> magazine;    // list of items and their counts
     OrderList* pending_orders;
+    OrderList* order_history;
 
     bool findPendingOrder( int order_ID, int& idx ) const;
     bool findHistoryOrder( int order_ID, int& idx ) const;
@@ -39,22 +39,24 @@ public:
     string getName() const;
     void setName( string new_name );
     bool getOrder( int order_ID, Order& order ) const;  // returns true if the order of given ID was found
-                                                        // and assigns a copy of the order in "order" parameter
-    float getOrderPrice( int order_ID ) const;  // returns price of found order or -1.0 if not found
+                                                        // and assigns a copy of the order to "order" parameter
+    float getOrderPrice( int order_ID ) const;          // returns price of found order or -1.0 if not found
 
-    // void printMagazine() const;
     // Magazine operations:
     void addItem( Item& item, int count );
     // bool removeItem( int item_ID );                  // returns 0 if item was not found
     bool findItem( int item_ID, int& idx ) const;       // idx is the index of the found item, -1 if not found
-    bool removeItemFromMagazine( int item_ID, Item& item, int count );// returns 0 if item was not found
-    void removeAllItems();
+    bool removeItemFromMagazine( int item_ID, Item& item, int count ); // returns 0 if item was not found
+    bool removeItemFromMagazine( int item_ID, int count );
+    bool removeItemFromMagazine( Item& item, int count );
+    bool removeItemFromMagazine( int item_ID ); // remove all items of this ID
+    bool removeItemFromMagazine( Item& item );  // remove all items of this ID
+    void removeAllItems(); 
 
     int newOrder( Customer* customer );     // returns ID of a newly created order
     bool addItemToOrder( int order_ID, int item_ID, int count );
     bool receivePayment( int order_ID, float money_amount );    // returns true if payment was successful
     bool sendOrder( int order_ID, string date_of_shipment );
-    // bool sendOrder( int order_ID );
 
     Shop& operator=( const Shop& shop );
 

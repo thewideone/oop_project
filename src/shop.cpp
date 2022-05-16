@@ -21,7 +21,7 @@ Shop::Shop( const Shop& other ){
     order_history = other.order_history;
     pending_orders = other.pending_orders;
 
-    dout << "Shop " << name << " has been created using copy constructor" << endl;
+    dout << "Shop " << name << " has been created by copy constructor" << endl;
 }
 
 Shop::~Shop(){
@@ -47,15 +47,19 @@ float Shop::getOrderPrice( int order_ID ) const {
 
 bool Shop::getOrder( int order_ID, Order& order ) const {
     int order_idx = -1;
+
     if( findPendingOrder( order_ID, order_idx ) ){
         order = pending_orders->orders[order_idx];
         return true;
     }
+
     if( findHistoryOrder( order_ID, order_idx ) ){
         order = order_history->orders[order_idx];
         return true;
     }
+
     cerr << "Shop " << name << ": Order of ID " << order_ID << " not found" << endl;
+
     return false;
 }
 
@@ -64,25 +68,14 @@ void Shop::addItem( Item& item, int count ){
         cerr << "In Shop::addItem(): Invalid item quantity. Ignoring." << endl;
         return;
     }
+
     int idx = -1;
+
     if( findItem( item.getID(), idx ) ) // if the item already exists,
         magazine[idx].second += count;  // increase its quantity in magazine
     else
         magazine.push_back( make_pair(item, count) );
-    
 }
-
-// bool Shop::removeItem( int item_ID ){
-//     int idx=-1;
-
-//     if( findItem( item_ID, idx ) ){
-//         magazine.erase( magazine.begin() + idx );
-
-//         return true;
-//     }
-
-//     return false;
-// }
 
 void Shop::removeAllItems(){
     magazine.clear();
@@ -90,14 +83,18 @@ void Shop::removeAllItems(){
 
 bool Shop::findItem( int item_ID, int& idx ) const {
     idx = -1;
+
     dout << "Shop " << name << ": ";
+
     for( long long unsigned int i=0; i < magazine.size(); i++ )
         if( magazine[i].first.getID() == item_ID ){
             idx = i;
             dout << "Found item of ID " << item_ID << endl;
             return true;
         }
+
     dout << "Item of ID " << item_ID << " not found" << endl;
+
     return false;
 }
 
@@ -127,6 +124,32 @@ bool Shop::removeItemFromMagazine( int item_ID, Item& item, int count ){
         dout << "Could not remove item " << item_ID << " from magazine: the item was not found" << endl;
 
     return ret_val;
+}
+
+bool Shop::removeItemFromMagazine( int item_ID, int count ){
+    Item item( 1.0, 1 );
+    return removeItemFromMagazine( item_ID, item, count );
+}
+
+bool Shop::removeItemFromMagazine( Item& item, int count ){
+    int item_ID = item.getID();
+    return removeItemFromMagazine( item_ID, item, count );
+}
+
+bool Shop::removeItemFromMagazine( int item_ID ){
+    int idx=-1;
+
+    if( findItem( item_ID, idx ) ){
+        magazine.erase( magazine.begin() + idx );
+
+        return true;
+    }
+
+    return false;
+}
+
+bool Shop::removeItemFromMagazine( Item& item ){
+    return removeItemFromMagazine( item.getID() );
 }
 
 int Shop::newOrder( Customer* customer ){
@@ -164,12 +187,14 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
     if( findPendingOrder( order_ID, order_idx ) ){
         int item_idx = -1;
         if( findItem( item_ID, item_idx ) ){
-
             // Check if the wanted item already exists in this order
             int wanted_item_idx = -1;
+
             for( long long unsigned int i=0; i < pending_orders->orders[order_idx].items.size(); i++ )
-                if( pending_orders->orders[order_idx].items[i].first.getID() == item_ID )
+                if( pending_orders->orders[order_idx].items[i].first.getID() == item_ID ){
                     wanted_item_idx = i;
+                    break;
+                }
             
             // If we're adding an item already existing in this order
             if( wanted_item_idx >= 0 ){ // index >= 0 so the item must exist
@@ -192,58 +217,19 @@ bool Shop::addItemToOrder( int order_ID, int item_ID, int count ){
                     // Add all the remaining items in the magazine
                     pending_orders->orders[order_idx].addItem( magazine[item_idx].first, magazine[item_idx].second );
                 else
-                    // Should not be possible
-                    cerr << "!!!Item count = 0 in magazine!!!\n";
+                    // Should not be possible, since items of quantity 0 are automatically removed in sendOrder()
+                    cerr << "In Shop::addItemToOrder(): !!!Item count = 0 in magazine!!!\n";
             }
 
-            dout << "Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
+            dout << "In Shop::addItemToOrder(): Item of ID " << item_ID << " was successufully added to order of ID " << order_ID << endl;
             ret_val = true;
         }
         else
-            dout << "No item of ID " << item_ID << " was found in order of ID " << order_ID << endl;
+            dout << "In Shop::addItemToOrder(): No item of ID " << item_ID << " was found in order of ID " << order_ID << endl;
     }
     else
-        dout << "No order of ID " << order_ID << " was found" << endl;
+        dout << "In Shop::addItemToOrder(): No order of ID " << order_ID << " was found" << endl;
     
-    return ret_val;
-}
-
-bool Shop::sendOrder( int order_ID, string date_of_shipment ){
-// bool Shop::sendOrder( int order_ID ){
-    bool ret_val = false;
-    int order_idx = -1;
-
-    if( findPendingOrder( order_ID, order_idx ) ){
-        if( pending_orders->orders[order_idx].isPaid() ){
-            for( long long unsigned int i=0; i < pending_orders->orders[order_idx].items.size(); i++ ){
-                Item item = pending_orders->orders[order_idx].items[i].first;
-                int count = pending_orders->orders[order_idx].items[i].second;
-
-                ret_val = removeItemFromMagazine( item.getID(), item, count );
-                // If item was found and removed from magazine, add it to the customer's inventory
-                if ( ret_val ){
-                    Customer* customer = pending_orders->orders[order_idx].getCustomer();
-                    customer->addItemToInventory( item, count );
-                }
-                else
-                    dout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID " << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
-            }
-            // Set date of shipment of the order
-            pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
-            // Add the order to histories of orders of the shop and the customer
-            Order order = pending_orders->orders[order_idx];
-            order_history->addElement( order );
-            pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
-            pending_orders->orders[order_idx].getCustomer()->removeOrderFromPending( order.getID() );
-            // Remove the order from pending order list of the shop
-            pending_orders->removeElement( order_ID );
-            dout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;
-        }
-        else
-            dout << "Shop " << name << ": order of ID " << order_ID << " was not sent, because it has not been paid yet" << endl;
-    }
-    else
-        dout << "Shop " << name << ": could not send order " << order_ID << ": the order was not found" << endl;
     return ret_val;
 }
 
@@ -260,9 +246,12 @@ bool Shop::receivePayment( int order_ID, float money_amount ){
 
     if( findPendingOrder( order_ID, idx ) ){
         dout << "Shop " << name << ": ";
+
         if( money_amount == pending_orders->orders[idx].getTotalPrice() ){
             pending_orders->orders[idx].setPaid();
+
             dout << "Successufully paid for order " << order_ID << endl;
+
             ret_val = true;
         }
         else if ( money_amount > pending_orders->orders[idx].getTotalPrice() )
@@ -280,14 +269,64 @@ bool Shop::receivePayment( int order_ID, float money_amount ){
     return ret_val;
 }
 
+bool Shop::sendOrder( int order_ID, string date_of_shipment ){
+    bool ret_val = false;
+    int order_idx = -1;
+
+    if( findPendingOrder( order_ID, order_idx ) ){
+        // If the order is paid
+        if( pending_orders->orders[order_idx].isPaid() ){
+            // Add all the items from it to the customer's inventory and remove them from magazine
+            for( long long unsigned int i=0; i < pending_orders->orders[order_idx].items.size(); i++ ){
+                Item item = pending_orders->orders[order_idx].items[i].first;
+                int count = pending_orders->orders[order_idx].items[i].second;
+
+                ret_val = removeItemFromMagazine( item.getID(), item, count );
+                // If item was found and removed from magazine, add it to the customer's inventory
+                if ( ret_val ){
+                    Customer* customer = pending_orders->orders[order_idx].getCustomer();
+                    customer->addItemToInventory( item, count );
+                }
+                else
+                    dout << "Shop " << name << ": " << "In order of ID " << order_ID << ": item of ID " << item.getID() << " will not be included in parcel. Reason: invalid quantity" << endl;
+            }
+            // Set date of shipment of the order
+            pending_orders->orders[order_idx].setDateOfShipment( date_of_shipment );
+            // Add the order to history of orders of the customer
+            Order order = pending_orders->orders[order_idx];
+            pending_orders->orders[order_idx].getCustomer()->addOrderToHistory( order );
+            pending_orders->orders[order_idx].getCustomer()->removeOrderFromPending( order.getID() );
+            // And the shop
+            order_history->addElement( order );
+            // Remove the order from pending order list of the shop
+            pending_orders->removeElement( order_ID );
+
+            dout << "Shop " << name << ": " << "Order " << order_ID << " was sent successufully" << endl;
+
+            ret_val = true;
+        }
+        else{
+            dout << "Shop " << name << ": order of ID " << order_ID << " was not sent, because it has not been paid yet" << endl;
+            ret_val = false;
+        }
+    }
+    else{
+        dout << "Shop " << name << ": could not send order " << order_ID << ": the order was not found" << endl;
+        ret_val = false;
+    }
+
+    return ret_val;
+}
+
 void Shop::print() const {
-    dout << *this;
+    cout << *this;
 }
 
 ostream& operator<<( ostream& out, const Shop& shop ){
     out << "--------------------" << endl;
     out << "Shop \"" << shop.name << "\" (ID: " << shop.ID << "):" << endl;
     out << "Magazine:" << endl;
+
     for( long long unsigned int i=0; i < shop.magazine.size(); i++ ){
         out << shop.magazine[i].first;
         out << "\tQuantity: " << shop.magazine[i].second << endl;

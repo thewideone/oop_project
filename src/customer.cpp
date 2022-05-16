@@ -16,27 +16,15 @@ Customer::Customer(){
 
 Customer::Customer( const Customer& other ){
     ID = other.ID;
-    // copyAllPendingOrders( other );
-    dout << "Copied all pending orders\n";
-    // collected_order_IDs.clear();
-    // collected_order_IDs.reserve( other.collected_order_IDs.size() );
-    // collected_order_IDs = other.collected_order_IDs;
     inventory.reserve( other.inventory.size() );
     inventory = other.inventory;
-    dout << "Copied inventory\n";
-
     pending_orders = new OrderList( *other.pending_orders );
-
     order_history = new OrderList( *other.order_history );
 
-    // order_history->orders = other.order_history->orders;
-
-    dout << "Customer " << ID << " has been created  using copy constructor" << endl;
+    dout << "Customer " << ID << " has been created by copy constructor" << endl;
 }
 
 Customer::~Customer(){
-    // pending_orders.clear();
-    // collected_order_IDs.clear();
     delete pending_orders;
     delete order_history;
 }
@@ -58,18 +46,20 @@ void Customer::addOrderToHistory( Order& order ){
     order_history->addElement( order );
 }
 
-// bool Customer::addToPendingOrders( const Shop& shop, const Order& order ){
-//     for( long long unsigned int i=0; i < pending_orders.size(); i++ )
-//         if( pending_orders[i].first )
-// }
-
 int Customer::makeOrder( Shop& shop ){
     int order_ID = shop.newOrder( this );
 
+    // Add a copy newly created order in the shop
+    // to pending order list of the customer
     Order order;
     if( shop.getOrder( order_ID, order ) )
-        pending_orders->addElement( order );
+        addOrderToPending( order );
+    
     return order_ID;
+}
+
+void Customer::addOrderToPending( Order& order ){
+    pending_orders->addElement( order );
 }
 
 void Customer::removeOrderFromPending( int order_ID ){
@@ -84,7 +74,7 @@ bool Customer::addItemToOrder( Shop& shop, int order_ID, const Item& item, int c
 
     int item_ID = item.getID();
 
-    int ret_val = shop.addItemToOrder( order_ID, item_ID, count );
+    bool ret_val = shop.addItemToOrder( order_ID, item_ID, count );
 
     // If the item was added to the order in the shop,
     // update the order in the customer's pending order list,
@@ -95,51 +85,42 @@ bool Customer::addItemToOrder( Shop& shop, int order_ID, const Item& item, int c
             Order order;
             if( shop.getOrder( order_ID, order ) )
                 pending_orders->orders[order_idx] = order;
+            else
+                ret_val = false;
         }
+        else
+            ret_val = false;
     }
 
     return ret_val;
 }
-
-// void Customer::copyAllPendingOrders( const Customer& other ){
-//     pending_orders->clear();
-//     pending_orders.reserve( other.pending_orders.size() );
-
-//     for( long long unsigned int i=0; i < other.pending_orders.size(); i++ ){
-//         pending_orders[i].first  = other.pending_orders[i].first;
-//         pending_orders[i].second = other.pending_orders[i].second;
-//     }
-// }
 
 bool Customer::payForOrder( Shop& shop, int order_ID, float money_amount ){
     if( money_amount <= 0 ){
         cerr << "In Customer::payForOrder(): Invalid item quantity. Ignoring." << endl;
         return false;
     }
+
     bool ret_val = shop.receivePayment( order_ID, money_amount );
 
+    // If shop has received the payment
     if( ret_val ){
+        // Find the same order in pending order list
+        // and set its "is_paid" flag to true
         int order_idx = -1;
         if( pending_orders->findElement( order_ID, order_idx ) )
             pending_orders->orders[order_idx].setPaid();
-        else
-            cerr << "Customer: can't pay for order " << order_ID << ": Order not found" << endl;
+        else{
+            cerr << "In Customer::payForOrder(): Customer " << ID << ": Order " << order_ID << " not found" << endl;
+            ret_val = false;
+        }
     }
-    else
-        cerr << "Could not pay\n";
+    else{
+        cerr << "In Customer::payForOrder(): Customer " << ID << " could not pay for order " << order_ID << endl;
+        ret_val = false;
+    }
 
     return ret_val;
-}
-
-// void Customer::addCollectedOrderID( int order_ID ){
-//     collected_order_IDs.push_back( order_ID );
-// }
-
-void Customer::printInventory(){
-    cout << "--------------------" << endl;
-    cout << "Customer " << ID << ": inventory:" << endl;
-    for( long long unsigned int i=0; i < inventory.size(); i++ )
-        cout << inventory[i].first << "\tQuantity: " << inventory[i].second << endl;
 }
 
 Customer& Customer::operator=( const Customer& other ){
@@ -147,22 +128,17 @@ Customer& Customer::operator=( const Customer& other ){
         return *this;
     
     ID = other.ID;
-    // copyAllPendingOrders( other );
-    // collected_order_IDs.clear();
-    // collected_order_IDs.reserve( other.collected_order_IDs.size() );
-    // collected_order_IDs = other.collected_order_IDs;
     inventory.clear();
     inventory.reserve( other.inventory.size() );
     inventory = other.inventory;
 
-    order_history->orders.clear();
-    delete order_history;
-    order_history = new OrderList(*other.order_history);
     pending_orders->orders.clear();
     delete pending_orders;
     pending_orders = new OrderList(*other.pending_orders);
 
-    dout << "Customer " << ID << " has been created by copy constructor" << endl;
+    order_history->orders.clear();
+    delete order_history;
+    order_history = new OrderList(*other.order_history);
 
     return *this;
 }
@@ -171,25 +147,39 @@ bool Customer::operator==( const Customer& other ) const {
     if( this == &other )
         return true;
     
-    if( ID == other.ID && pending_orders == other.pending_orders &&
-        *order_history == *other.order_history && inventory == other.inventory )
+    if( ID == other.ID &&
+        *pending_orders == *other.pending_orders &&
+        *order_history == *other.order_history &&
+        inventory == other.inventory )
         return true;
     return false;
-    
-    // if( ID == other.ID ){
-    //     for( long long unsigned int i=0; i < other.collected_order_IDs.size(); i++ )
-    //         if( collected_order_IDs[i] != other.collected_order_IDs[i] )
-    //             return false;
-    //     for( long long unsigned int i=0; i < other.pending_orders.size(); i++ )
-    //         if( pending_orders[i].second != other.pending_orders[i].second )
-    //             return false;
-    // }
-
-    // return true;
 }
 
 bool Customer::operator!=( const Customer& other ) const {
     return !( *this == other );
+}
+
+void Customer::printInventory() const {
+    cout << "--------------------" << endl;
+    cout << "Customer " << ID << ": inventory:" << endl;
+    for( long long unsigned int i=0; i < inventory.size(); i++ )
+        cout << inventory[i].first << "\tQuantity: " << inventory[i].second << endl;
+}
+
+void Customer::printPendingOrders() const {
+    cout << "Pending orders of customer " << ID << ":";
+    if( pending_orders->is_empty() )
+        cout << " None" << endl;
+    else
+        cout << endl << *pending_orders;
+}
+
+void Customer::printCollectedOrders() const {
+    cout << "Collected orders of customer " << ID << ":";
+    if( order_history->is_empty() )
+        cout << " None" << endl;
+    else
+        cout << endl << *order_history;
 }
 
 ostream& operator<<( ostream& out, const Customer& customer ){

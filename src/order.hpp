@@ -15,8 +15,8 @@ using namespace std;
 class Order{
 private:
     int ID;
-    static int ID_generator;    // static variables are 
-                                // automatically initialized to 0
+    static int ID_generator;
+    
     Customer* customer; // pointer to the customer making the order
     bool is_paid;
     string date_of_shipment;
